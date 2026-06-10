@@ -1,8 +1,5 @@
-readme_content = """# Symulator Wieży Kontroli Lotów (Airport Control Tower Simulator)
-
-Kompleksowy symulator środowiska lotniskowego w architekturze **Klient-Serwer** zrealizowany w języku C z wykorzystaniem mechanizmów systemowych standardu **POSIX**. Projekt demonstruje praktyczne zastosowanie zarządzania procesami, komunikacji sieciowej przez gniazda strumieniowe, wielowątkowości oraz synchronizacji dostępu do zasobów krytycznych (wzajemne wykluczanie).
-
-Projekt został zaprojektowany w sposób modularny i wieloplikowy, zgodnie z najlepszymi praktykami inżynierii oprogramowania (separacja interfejsu od implementacji w plikach nagłówkowych, brak antywzorca dołączania plików `*.c` dyrektywą `#include`).
+### Kompleksowy symulator środowiska lotniskowego ### 
+w architekturze **Klient-Serwer** zrealizowany w języku C z wykorzystaniem mechanizmów systemowych standardu **POSIX**. Projekt demonstruje praktyczne zastosowanie zarządzania procesami, komunikacji sieciowej przez gniazda strumieniowe, wielowątkowości oraz synchronizacji dostępu do zasobów krytycznych (wzajemne wykluczanie).
 
 ---
 
@@ -65,3 +62,25 @@ Otwórz terminal w katalogu projektu i użyj jednego z poniższych poleceń:
 
 ### Kompilacja projektu
 Kompiluje przyrostowo zmienione moduły do plików obiektowych `.o`, a następnie linkuje je w gotowy plik wykonywalny:
+```bash
+make
+```
+
+### Uruchomienie symulacji
+Automatycznie sprawdza stan plików, w razie potrzeby kompiluje najnowsze zmiany i od razu uruchamia symulator w terminalu:
+
+```Bash
+make run
+```
+### Czyszczenie katalogu projektu
+Usuwa wszystkie wygenerowane pliki pośrednie (.o) oraz końcowy plik wykonywalny, przywracając czysty stan repozytorium:
+
+```Bash
+make clean
+```
+## 5. Przebieg i Analiza Działania Programu
+Po uruchomieniu programu za pomocą komendy make run, w terminalu zaobserwujesz następujący przepływ logiki:
+
+1. Inicjalizowany jest mutex pasa startowego, po czym proces serwera przechodzi w stan nasłuchu na porcie 8080.
+2. Proces główny generuje za pomocą fork() procesy samolotów, z których każdy wysyła prośbę o lądowanie przez gniazdo TCP.
+3. Wieża obsługuje je asynchronicznie w osobnych wątkach, które rywalizują o pas startowy zabezpieczony przez mutex. Samoloty lądują sekwencyjnie i bezpiecznie jeden po drugim, blokując i zwalniając pas w kontrolowany sposób.
